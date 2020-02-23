@@ -8,13 +8,13 @@ public class InitializeWorld : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        foreach (Transform child in TextHolder.transform)
+        foreach (Transform child in transform)
         {
             GameObject.Destroy(child.gameObject);
         }
 
         foreach (var layer in Layers)
-            Instantiate(layer);
+            Instantiate(layer, transform);
     }
 
     // Update is called once per frame

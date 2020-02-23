@@ -34,16 +34,25 @@ public class GoesToClick : MonoBehaviour
     public float Speed;
     Rigidbody2D Body;
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         var x = Input.GetAxis("Horizontal");
         var y = Input.GetAxis("Vertical");
         if (x != 0 || y != 0)
-            TargetLocation = CurrentLocation + new Vector2(x,y).normalized;
+        {
+            //one unit is four pixels. our tilemaps units are 16 units. when we set a new target location clamp to 16s
+            //var currentTarget = (TargetLocation.Equals(Vector2.negativeInfinity)) ? CurrentLocation : TargetLocation;
+            var currentTarget =  CurrentLocation;
 
+            TargetLocation = currentTarget + new Vector2(x * 16, y * 16);
+            TargetLocation.x = Mathf.RoundToInt(TargetLocation.x/16)*16;
+            TargetLocation.y = Mathf.RoundToInt(TargetLocation.y/16)*16;
+
+        }
         if (!TargetLocation.Equals(Vector2.negativeInfinity))
         {
-            var v = Vector2.MoveTowards(CurrentLocation, TargetLocation, Time.deltaTime * Speed);
+            var v = Vector2.MoveTowards(CurrentLocation, TargetLocation, Time.fixedDeltaTime * Speed);
+            Debug.Log($"Movement Speed : {Time.fixedDeltaTime * Speed}");
             Debug.Log($"Target Location : {TargetLocation}");
             Debug.Log($"Current Position : {CurrentLocation}");
             Debug.Log($"Move To : {v}");
