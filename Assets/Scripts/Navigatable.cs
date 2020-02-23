@@ -24,10 +24,12 @@ public class Navigatable : MonoBehaviour
     {
         
     }
-    void MovementInput(Vector2 pos)
+    void MovementInput(Vector2 rawPos)
     {
-        Debug.Log($"clicked {pos}");
+        //clamp pos to a grid tile
+        Debug.Log($"clicked {rawPos}");
         //fire event for position
-        PositionSignalled?.Invoke(pos);
+        
+        PositionSignalled?.Invoke(rawPos);
     }
 }

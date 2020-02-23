@@ -7,11 +7,11 @@ public class MoveInput : MonoBehaviour
 {
     public class PositionEvent : UnityEvent<Vector2> { }
     public static UnityEvent<Vector2> PositionSignalled = new PositionEvent();
-
+    public Camera ThisCamera;
     // Start is called before the first frame update
     void Start()
     {
-        
+        ThisCamera = GetComponent<Camera>();
     }
 
     bool PreviousDownState;
@@ -49,6 +49,6 @@ public class MoveInput : MonoBehaviour
     {
         Debug.Log($"clicked {pos}");
         //fire event for position
-        PositionSignalled?.Invoke(pos);
+        PositionSignalled?.Invoke(ThisCamera.ScreenToWorldPoint(pos));
     }
 }
