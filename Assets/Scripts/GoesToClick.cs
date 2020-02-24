@@ -10,6 +10,8 @@ public class GoesToClick : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        TargetX = CurrentLocation.x;
+        TargetY = CurrentLocation.y;
         Body = GetComponent<Rigidbody2D>();
         //find clickable areas object and register event
         StartCoroutine(LookForMaps());
@@ -28,47 +30,64 @@ public class GoesToClick : MonoBehaviour
         }
     }
 
-    public float precision = .01f;
+    public float precision = .1f;
     public Vector2 CurrentLocation => transform.localPosition;
-    public Vector2 TargetLocation;
+    public float? TargetX;
+    public float? TargetY;
     public float Speed;
     Rigidbody2D Body;
     // Update is called once per frame
     void FixedUpdate()
     {
-        var x = Input.GetAxis("Horizontal");
-        var y = Input.GetAxis("Vertical");
+        var x = Input.GetAxisRaw("Horizontal");
+        var y = Input.GetAxisRaw("Vertical");
+        //one unit is four pixels. our tilemaps units are 16 units. when we set a new target location clamp to 16s
+        //var currentTarget = (TargetLocation.Equals(Vector2.negativeInfinity)) ? CurrentLocation : TargetLocation;
         if (x != 0 || y != 0)
-        {
-            //one unit is four pixels. our tilemaps units are 16 units. when we set a new target location clamp to 16s
-            //var currentTarget = (TargetLocation.Equals(Vector2.negativeInfinity)) ? CurrentLocation : TargetLocation;
-            var currentTarget =  CurrentLocation;
+            Debug.Log($"X: {x}\nY: {y}");
+        if (x != 0)
+            TargetX = CurrentLocation.x + x * (8 + precision);
+        else if (TargetX != null)
+            TargetX = Mathf.RoundToInt(TargetX.Value / 16) * 16;
+        if (y != 0)
+            TargetY = CurrentLocation.y + y * (8 + precision);
+        else if (TargetY != null)
+            TargetY = Mathf.RoundToInt(TargetY.Value / 16) * 16;
 
-            TargetLocation = currentTarget + new Vector2(x * 16, y * 16);
-            TargetLocation.x = Mathf.RoundToInt(TargetLocation.x/16)*16;
-            TargetLocation.y = Mathf.RoundToInt(TargetLocation.y/16)*16;
-
-        }
-        if (!TargetLocation.Equals(Vector2.negativeInfinity))
+        if (TargetX != null || TargetY != null)
         {
-            var v = Vector2.MoveTowards(CurrentLocation, TargetLocation, Time.fixedDeltaTime * Speed);
-            Debug.Log($"Movement Speed : {Time.fixedDeltaTime * Speed}");
-            Debug.Log($"Target Location : {TargetLocation}");
-            Debug.Log($"Current Position : {CurrentLocation}");
-            Debug.Log($"Move To : {v}");
+            var targetLocation = new Vector2(TargetX ?? CurrentLocation.x , TargetY ?? CurrentLocation.y);
+
+            var v = Vector2.MoveTowards(CurrentLocation, targetLocation, Time.fixedDeltaTime * Speed);
+            //Debug.Log($"Movement Speed : {Time.fixedDeltaTime * Speed}");
+            //Debug.Log($"Target Location : {TargetLocation}");
+            //Debug.Log($"Current Position : {CurrentLocation}");
+            //Debug.Log($"Move To : {v}");
 
             Body.MovePosition(v);
 
-            if ((CurrentLocation - TargetLocation).sqrMagnitude < precision)
+            if ((CurrentLocation - targetLocation).magnitude < precision)
             {
-                Debug.Log($"Setting Target Location: {TargetLocation}");
-                TargetLocation = Vector2.negativeInfinity;
+                //Debug.Log($"Setting Target Location: {TargetLocation}");
+                TargetX = null;
+                TargetY = null;
             }
         }
     }
+
+    private bool SameTile(float p, float p2)
+    {
+        return Mathf.RoundToInt(p / 16) == Mathf.RoundToInt(p2 / 16);
+    }
+
+    private void ExittingBlock(float x, float y)
+    {
+    }
+
     public void MoveToLocation(Vector2 pos)
     {
         Debug.Log("Received movement signal");
-        TargetLocation = pos;
+        TargetX = pos.x;
+        TargetY = pos.y;
     }
 }
