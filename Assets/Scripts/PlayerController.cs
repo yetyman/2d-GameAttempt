@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class GoesToClick : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     bool MapFound = false;
     // Start is called before the first frame update
@@ -27,7 +27,7 @@ public class GoesToClick : MonoBehaviour
     {
         while (!MapFound)
         {
-            foreach (var map in Navigatable.NavigableMaps)
+            foreach (var map in NavigatableMap.NavigableMaps)
             {
                 MapFound = true;
                 map.PositionSignalled.AddListener(MoveToLocation);

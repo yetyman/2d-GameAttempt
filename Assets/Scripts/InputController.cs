@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class MoveInput : MonoBehaviour
+public class InputController : MonoBehaviour
 {
     public class PositionEvent : UnityEvent<Vector2> { }
     public static UnityEvent<Vector2> PositionSignalled = new PositionEvent();

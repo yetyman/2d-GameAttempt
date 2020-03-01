@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Tilemaps;
-using static MoveInput;
+using static InputController;
 
-public class Navigatable : MonoBehaviour
+public class NavigatableMap : MonoBehaviour
 {
-    public static List<Navigatable> NavigableMaps = new List<Navigatable>();
+    public static List<NavigatableMap> NavigableMaps = new List<NavigatableMap>();
 
     public UnityEvent<Vector2> PositionSignalled = new PositionEvent();
 
@@ -16,7 +16,7 @@ public class Navigatable : MonoBehaviour
     void Start()
     {
         NavigableMaps.Add(this);
-        MoveInput.PositionSignalled.AddListener(MovementInput);
+        InputController.PositionSignalled.AddListener(MovementInput);
     }
 
     // Update is called once per frame
