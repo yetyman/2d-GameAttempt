@@ -10,6 +10,12 @@ public class GoesToClick : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        for (int i = 0; i < 2; i++)
+        {
+            PreviousLocY.Enqueue(CurrentLocation.y);
+            PreviousLocX.Enqueue(CurrentLocation.x);
+        }
+
         TargetX = CurrentLocation.x;
         TargetY = CurrentLocation.y;
         Body = GetComponent<Rigidbody2D>();
@@ -30,21 +36,26 @@ public class GoesToClick : MonoBehaviour
         }
     }
 
-    public float precision = .1f;
+    public float precision = .001f;
     public Vector2 CurrentLocation => transform.localPosition;
     public float? TargetX;
     public float? TargetY;
     public float Speed;
     Rigidbody2D Body;
+
+    private Queue<float> PreviousLocY = new Queue<float>();
+    private Queue<float> PreviousLocX = new Queue<float>();
     // Update is called once per frame
     void FixedUpdate()
     {
+
         var x = Input.GetAxisRaw("Horizontal");
         var y = Input.GetAxisRaw("Vertical");
         //one unit is four pixels. our tilemaps units are 16 units. when we set a new target location clamp to 16s
         //var currentTarget = (TargetLocation.Equals(Vector2.negativeInfinity)) ? CurrentLocation : TargetLocation;
         if (x != 0 || y != 0)
             Debug.Log($"X: {x}\nY: {y}");
+
         if (x != 0)
             TargetX = CurrentLocation.x + x * (8 + precision);
         else if (TargetX != null)
@@ -56,6 +67,10 @@ public class GoesToClick : MonoBehaviour
 
         if (TargetX != null || TargetY != null)
         {
+
+            PreviousLocY.Enqueue(CurrentLocation.y);
+            PreviousLocX.Enqueue(CurrentLocation.x);
+
             var targetLocation = new Vector2(TargetX ?? CurrentLocation.x , TargetY ?? CurrentLocation.y);
 
             var v = Vector2.MoveTowards(CurrentLocation, targetLocation, Time.fixedDeltaTime * Speed);
@@ -72,6 +87,20 @@ public class GoesToClick : MonoBehaviour
                 TargetX = null;
                 TargetY = null;
             }
+
+
+            //if (Body.position.x == PreviousLocX && TargetX != null)
+            //    TargetX = null;
+
+            Debug.Log(
+                $"X Current: {CurrentLocation.x:0000.000} To {TargetX:0000.000}\n" +
+                $"Y Current: {CurrentLocation.y:0000.000} To {TargetY:0000.000}");
+            //$"{PreviousLocY.Count} frames ago : {PreviousLocY.Peek()}\n" +
+
+            if (CurrentLocation.y == PreviousLocY.Dequeue() && TargetY != null)
+                TargetY = null;
+            if (CurrentLocation.x == PreviousLocX.Dequeue() && TargetX != null)
+                TargetX = null;
         }
     }
 
