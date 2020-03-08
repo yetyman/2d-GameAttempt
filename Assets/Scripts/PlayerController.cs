@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
             PreviousLocY.Enqueue(CurrentLocation.y);
             PreviousLocX.Enqueue(CurrentLocation.x);
 
-            var targetLocation = new Vector2(TargetX ?? CurrentLocation.x , TargetY ?? CurrentLocation.y);
+            var targetLocation = new Vector2(TargetX ?? CurrentLocation.x, TargetY ?? CurrentLocation.y);
 
             var v = Vector2.MoveTowards(CurrentLocation, targetLocation, Time.fixedDeltaTime * Speed);
             //Debug.Log($"Movement Speed : {Time.fixedDeltaTime * Speed}");
@@ -104,19 +104,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool SameTile(float p, float p2)
-    {
-        return Mathf.RoundToInt(p / 16) == Mathf.RoundToInt(p2 / 16);
-    }
-
-    private void ExittingBlock(float x, float y)
-    {
-    }
-
     public void MoveToLocation(Vector2 pos)
     {
         Debug.Log("Received movement signal");
         TargetX = pos.x;
         TargetY = pos.y;
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.GetComponent<TagList>().Attributes.ContainsKey("Obtainable"))
+        {
+            Destroy(collision.gameObject);
+            string type = collision.gameObject.GetComponent<TagList>().Attributes["GameObjectType"];
+            if (!Inventory.Items.ContainsKey(type))
+                Inventory.Items.Add(type, 0);
+            Inventory.Items[type]++;
+        }
     }
 }
