@@ -123,9 +123,7 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(collision.gameObject);
             string type = collision.gameObject.GetComponent<TagList>().Attributes["GameObjectType"];
-            if (!Inventory.Items.ContainsKey(type))
-                Inventory.Items.Add(type, 0);
-            Inventory.Items[type]++;
+            Inventory.Add(type);
         }
     }
 }
