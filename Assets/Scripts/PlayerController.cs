@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static Inventory;
 
 public class PlayerController : MonoBehaviour
 {
     bool MapFound = false;
+    public Inventory Inventory;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +24,8 @@ public class PlayerController : MonoBehaviour
         Body = GetComponent<Rigidbody2D>();
         //find clickable areas object and register event
         StartCoroutine(LookForMaps());
+
+        Inventory = GetComponent<Inventory>();
     }
 
     private IEnumerator LookForMaps()
@@ -53,8 +58,8 @@ public class PlayerController : MonoBehaviour
         var y = Input.GetAxisRaw("Vertical");
         //one unit is four pixels. our tilemaps units are 16 units. when we set a new target location clamp to 16s
         //var currentTarget = (TargetLocation.Equals(Vector2.negativeInfinity)) ? CurrentLocation : TargetLocation;
-        if (x != 0 || y != 0)
-            Debug.Log($"X: {x}\nY: {y}");
+        //if (x != 0 || y != 0)
+            //Debug.Log($"X: {x}\nY: {y}");
 
         if (x != 0)
             TargetX = CurrentLocation.x + x * (8 + precision);
@@ -92,9 +97,9 @@ public class PlayerController : MonoBehaviour
             //if (Body.position.x == PreviousLocX && TargetX != null)
             //    TargetX = null;
 
-            Debug.Log(
-                $"X Current: {CurrentLocation.x:0000.000} To {TargetX:0000.000}\n" +
-                $"Y Current: {CurrentLocation.y:0000.000} To {TargetY:0000.000}");
+            //Debug.Log(
+            //    $"X Current: {CurrentLocation.x:0000.000} To {TargetX:0000.000}\n" +
+            //    $"Y Current: {CurrentLocation.y:0000.000} To {TargetY:0000.000}");
             //$"{PreviousLocY.Count} frames ago : {PreviousLocY.Peek()}\n" +
 
             if (CurrentLocation.y == PreviousLocY.Dequeue() && TargetY != null)
@@ -106,13 +111,14 @@ public class PlayerController : MonoBehaviour
 
     public void MoveToLocation(Vector2 pos)
     {
-        Debug.Log("Received movement signal");
+        //Debug.Log("Received movement signal");
         TargetX = pos.x;
         TargetY = pos.y;
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log($"Colliding");
         if (collision.gameObject.GetComponent<TagList>().Attributes.ContainsKey("Obtainable"))
         {
             Destroy(collision.gameObject);

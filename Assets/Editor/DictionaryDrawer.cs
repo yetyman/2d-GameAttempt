@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using static Inventory;
 using static TagList;
 using UnityObject = UnityEngine.Object;
 
@@ -175,3 +176,7 @@ public abstract class DictionaryDrawer<TK, TV> : PropertyDrawer
 
 [CustomPropertyDrawer(typeof(StringStringDictionary))]
 public class StringStringDictionaryDrawer : DictionaryDrawer<string, string> { }
+
+
+[CustomPropertyDrawer(typeof(StringIntDictionary))]
+public class StringIntDictionaryDrawer : DictionaryDrawer<string, int> { }

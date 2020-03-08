@@ -31,7 +31,7 @@ public class InputController : MonoBehaviour
         //else 
         if (Input.GetMouseButtonDown(0)){
             v = Input.mousePosition;
-            Debug.Log("Mouse Position : " + v);
+            //Debug.Log("Mouse Position : " + v);
         }
         else PreviousDownState = false;
 
