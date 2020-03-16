@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using static Inventory;
@@ -8,9 +9,9 @@ using UnityObject = UnityEngine.Object;
 
 public abstract class DictionaryDrawer<TK, TV> : PropertyDrawer
 {
-    private SerializableDictionary<TK, TV> _Dictionary;
-    private bool _Foldout;
-    private const float kButtonWidth = 18f;
+    protected SerializableDictionary<TK, TV> _Dictionary;
+    protected bool _Foldout;
+    protected const float kButtonWidth = 18f;
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
@@ -100,12 +101,12 @@ public abstract class DictionaryDrawer<TK, TV> : PropertyDrawer
         }
     }
 
-    private void RemoveItem(TK key)
+    protected void RemoveItem(TK key)
     {
         _Dictionary.Remove(key);
     }
 
-    private void CheckInitialize(SerializedProperty property, GUIContent label)
+    protected void CheckInitialize(SerializedProperty property, GUIContent label)
     {
         if (_Dictionary == null)
         {
@@ -134,7 +135,7 @@ public abstract class DictionaryDrawer<TK, TV> : PropertyDrawer
             { typeof(Rect), (rect, value) => EditorGUI.RectField(rect, (Rect)value) },
         };
 
-    private static T DoField<T>(Rect rect, Type type, T value)
+    protected static T DoField<T>(Rect rect, Type type, T value)
     {
         Func<Rect, object, object> field;
         if (_Fields.TryGetValue(type, out field))
@@ -150,33 +151,46 @@ public abstract class DictionaryDrawer<TK, TV> : PropertyDrawer
         return value;
     }
 
-    private void ClearDictionary()
+    protected void ClearDictionary()
     {
         _Dictionary.Clear();
     }
 
-    private void AddNewItem()
+    protected void AddNewItem()
     {
         TK key;
         if (typeof(TK) == typeof(string))
-            key = (TK)(object)(""+_Dictionary.Keys.Count);
+        {
+            int i = _Dictionary.Keys.Count;
+            while (_Dictionary.ContainsKey((TK)(object)("" + i)))
+                i++;
+            key = (TK)(object)("" + i);
+        }
         else key = default(TK);
 
         var value = default(TV);
+        if(IsGenericList(typeof(TV)))
+            value = (TV)Activator.CreateInstance(typeof(TV));
         try
         {
             _Dictionary.Add(key, value);
+            //Debug.Log($"Added {key} , {value} , of type {typeof(TV).FullName}");
         }
         catch (Exception e)
         {
             Debug.Log(e.Message);
         }
     }
-}
 
+    public static bool IsGenericList(Type oType)
+    {
+        return (oType.IsGenericType && (oType.GetGenericTypeDefinition() == typeof(List<>)));
+    }
+}
 [CustomPropertyDrawer(typeof(StringStringDictionary))]
 public class StringStringDictionaryDrawer : DictionaryDrawer<string, string> { }
 
 
 [CustomPropertyDrawer(typeof(StringIntDictionary))]
 public class StringIntDictionaryDrawer : DictionaryDrawer<string, int> { }
+

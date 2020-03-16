@@ -119,7 +119,7 @@ public class PlayerController : MonoBehaviour
     void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log($"Colliding");
-        if (collision.gameObject.GetComponent<TagList>().Attributes.ContainsKey("Obtainable"))
+        if (collision?.gameObject?.GetComponent<TagList>()?.Attributes?.ContainsKey("Obtainable")??false)
         {
             Destroy(collision.gameObject);
             string type = collision.gameObject.GetComponent<TagList>().Attributes["GameObjectType"];

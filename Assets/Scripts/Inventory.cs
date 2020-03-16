@@ -8,8 +8,6 @@ public class Inventory : MonoBehaviour
 {
     [Serializable] public class StringIntDictionary : SerializableDictionary<string, int> { }
 
-
-    [SerializeField]
     public StringIntDictionary Items = new StringIntDictionary();
 
     [Serializable]

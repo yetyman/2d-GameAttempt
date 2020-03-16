@@ -486,7 +486,15 @@ public class SerializableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
                 array[index++] = new KeyValuePair<TKey, TValue>(_Keys[i], _Values[i]);
         }
     }
-
+    public List<KeyValuePair<TKey,TValue>> ToList()
+    {
+        var ls = new List<KeyValuePair<TKey, TValue>>();
+        var enumerator = GetEnumerator();
+        while (enumerator.MoveNext())
+            ls.Add(enumerator.Current);
+        enumerator.Dispose();
+        return ls;
+    }
     public bool IsReadOnly
     {
         get { return false; }
@@ -541,6 +549,10 @@ public class SerializableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
             {
                 if (_Dictionary._HashCodes[_Index] >= 0)
                 {
+                    if(_Dictionary._Keys.Length != _Dictionary._Values.Length)
+                    {
+                        throw new Exception($"Dictionary invalid, {_Dictionary._Keys.Length} Keys, {_Dictionary._Values.Length} Values, {_Dictionary._HashCodes.Length} Hashes");
+                    }
                     _Current = new KeyValuePair<TKey, TValue>(_Dictionary._Keys[_Index], _Dictionary._Values[_Index]);
                     _Index++;
                     return true;
