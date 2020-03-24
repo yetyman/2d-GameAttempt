@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
 
             var v = Vector2.MoveTowards(CurrentLocation, targetLocation, Time.fixedDeltaTime * Speed);
 
-            Debug.Log($"Move To : {v}");
+            //Debug.Log($"Move To : {v}");
 
             Body.MovePosition(v);
 

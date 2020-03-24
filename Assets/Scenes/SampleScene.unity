@@ -821,7 +821,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffa2e6599eb94ea468bd11bceef860dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MinLerpToCenterRange: 0.5
+  MinClipRange: 0.9
   player: {fileID: 63039132}
+  AnchorSpeed: 2
+  Curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.0018730164
+      value: 0
+      inSlope: 0.23989145
+      outSlope: 0.23989145
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.16797492
+    - serializedVersion: 3
+      time: 0.34123486
+      value: 0.28151375
+      inSlope: 1.1303785
+      outSlope: 1.1303785
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.19071329
+      outWeight: 0.28171325
+    - serializedVersion: 3
+      time: 0.77299917
+      value: 0.6700356
+      inSlope: 0.6120272
+      outSlope: 0.6120272
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.30889508
+      outWeight: 0.3718581
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 3.308099
+      outSlope: 3.308099
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.1570356
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &545025148
 PrefabInstance:
   m_ObjectHideFlags: 0

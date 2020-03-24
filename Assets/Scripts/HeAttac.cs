@@ -55,9 +55,9 @@ public class HeAttac : MonoBehaviour
 
     public void TriggerAttack(InputAction.CallbackContext context)
     {
-        Debug.Log("Attack Triggered");
+        ///Debug.Log("Attack Triggered");
         AttackAction = AttackAction ?? new Action(()=>{
-            Debug.Log("Firing");
+            //Debug.Log("Firing");
             if (CanAttack())
                 Attack();
         });
@@ -65,7 +65,7 @@ public class HeAttac : MonoBehaviour
         AttackWhile = AttackWhile ?? new Predicate<object>(
             (o) =>
             {
-                Debug.Log("Checking Attack");
+                ///Debug.Log("Checking Attack");
                 return !IsPlayer || (IsPlayer && buttonControl.isPressed);
             }
         );
