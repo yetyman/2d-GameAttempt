@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[CreateAssetMenu]
-public class StoneWallMarching : RuleTile<StoneWallMarching.Neighbor> {
+[CreateAssetMenu(menuName ="Tiles/Marching Squares Tile")]
+public class MarchingSquaresTile : RuleTile<MarchingSquaresTile.Neighbor> {
 
     public GameObject o0000;
     public GameObject o0001;
@@ -46,26 +47,29 @@ public class StoneWallMarching : RuleTile<StoneWallMarching.Neighbor> {
     };
     static Vector3 CachedCellSize;
     static Vector3 center = new Vector3(.5f, .5f, 0);
-    public override bool RuleMatches(TilingRule rule, Vector3Int position, ITilemap tilemap, ref Matrix4x4 transform)
+    public override bool StartUp(Vector3Int position, ITilemap tilemap, GameObject instantiatedGameObject)
     {
+
         Debug.Log($"I start {position}");
         if (tilemap != CachedMap)
             squarePatterns.Clear();
         if (!squarePatterns.Any())
         {
+            CachedMap = tilemap;
             CachedBehaviour = tilemap.GetComponent<Tilemap>();
-            CachedTilemapLocation = CachedBehaviour.transform;
+            CachedTilemapLocation = tilemap.GetComponent<Transform>();
             CachedCellSize = CachedBehaviour.cellSize;
-            CachedTowardCamera = new Vector3Int(0,0, CachedBehaviour.transform.position.z - Camera.main.transform.position.z < 0 ? 1:-1);
+            CachedTowardCamera = new Vector3Int(0, 0, CachedBehaviour.transform.position.z - Camera.main.transform.position.z < 0 ? 1 : -1);
             Debug.Log($"I found things for this tilemap");
             squarePatterns.Add(0b_0000_0000, o0000);
             squarePatterns.Add(0b_0000_0001, o0001);
             squarePatterns.Add(0b_0000_0011, o0011);
             squarePatterns.Add(0b_0000_0111, o0111);
-            squarePatterns.Add(0b_0000_0101 , o0101);
+            squarePatterns.Add(0b_0000_1111, o1111);
+            squarePatterns.Add(0b_0000_0101, o0101);
         }
         neighbors.Clear();
-        var badNeighbors = rule.GetNeighbors();
+
 
         //bit arr of neighbors
         //7 0 1
@@ -74,15 +78,15 @@ public class StoneWallMarching : RuleTile<StoneWallMarching.Neighbor> {
 
         byte myBytes = 0;
         byte neighborByte = 1;
-        
-        var enume = badNeighbors.GetEnumerator();
-        while (enume.MoveNext())
+
+        foreach (var adj in neighboring)
         {
-            var pos = enume.Current.Key - position;
-            if(Mathf.Abs(pos.x) <= 1 && Mathf.Abs(pos.y) <= 1)
-                myBytes += (byte)(neighborByte << neighboring[pos]);
+            var pos = adj.Key + position;
+            var posTile = CachedMap.GetTile(pos);
+            if (posTile != null)
+                myBytes += (byte)(neighborByte << adj.Value);
         }
-        Debug.Log($"at {position} but really {CachedBehaviour.GetCellCenterLocal(position)}\n{myBytes} (should be anything a byte can be 0-255)");
+        Debug.Log($"at {position} but really {CachedBehaviour.GetCellCenterLocal(position)}\n{Convert.ToString(myBytes, 2)} (should be anything a byte can be 0-255)");
 
         //made bit arr
         //now make four corners for marching squares shape resolution
@@ -95,9 +99,10 @@ public class StoneWallMarching : RuleTile<StoneWallMarching.Neighbor> {
         for (int i = 0, b = 0; i < 4; i++, b += 2)//8,6,4,2
         {
             corners[i] = (byte)(((myBytes << b) | (byte)((uint)myBytes >> (8 - b))) & 0b_0000_0111); //get surrounding //looping left shift... cast to uint so that right shift fills with 0.
-            corners[i] |= 0b_000_1000;//include self
-            corners[i] = (byte)(((corners[i] << i) | (byte)((uint)corners[i] >> (4 - i))) & 0b_0000_1111); //rotate 
-            Debug.Log($"corner {i} is {corners[i]} (should be 0-15)");
+            corners[i] |= 0b_0000_1000;//include self
+            corners[i] = (byte)(((corners[i] << (4 - i)) | (byte)((uint)corners[i] >> i)) & 0b_0000_1111); //rotate  
+            corners[i] = (byte)(((corners[i] << 3) | (byte)((uint)corners[i] >> (1))) & 0b_0000_1111); //rotate back 1
+            Debug.Log($"corner {i} is {Convert.ToString(corners[i])} (should be 0-15)");
         }
 
         //now each corner is rotated to the same orientation relative to the whole block.
@@ -120,22 +125,33 @@ public class StoneWallMarching : RuleTile<StoneWallMarching.Neighbor> {
         for (int i = 0; i < 4; i++)
         {
             int r = 0;
-            while (!squarePatterns.ContainsKey(check))
-                check = (byte)(((corners[i] << r) | (byte)((uint)corners[i] >> (4 - r++))) & 0b_0000_1111);
-
+            check = corners[i];
+            while (!squarePatterns.ContainsKey(check)) 
+            {
+                r++;
+                check = (byte)(((check << 1) | (byte)((uint)check >> (4 - 1))) & 0b_0000_1111);
+            }
+            Debug.Log($"{position} is a {Convert.ToString(check, 2)}");
             go = squarePatterns[check];
-            //instantiate the game object at tile position plus the right transform to center on the correct portion of the square, rotate by r*90
-            go = Instantiate<GameObject>(go, CachedBehaviour.transform);
-            go.transform.localPosition = CachedBehaviour.GetCellCenterLocal(position) + Vector3.Scale(CachedCellSize, (center - CachedBehaviour.tileAnchor + .25f * cornerLocs[i]));
-            go.transform.localRotation = Quaternion.AngleAxis(-r * 90, CachedTowardCamera);
-            go.transform.localScale = Vector3.Scale(Vector3.one / 2, CachedCellSize); //assume GameObject is 1 unit scale. because standards. depending on usage, cachedCellSize may shift to a vec3 of the smallest aspect of the CachedCellSize // just aspect ratio things
-            go.name = "3d" + position.ToString() + "(" + i + ")";
+            if (go != null)
+            {
+                string name = $"3d{ position.ToString()}({i})({Convert.ToString(corners[i],2)})";
+                if (CachedTilemapLocation.Find(name) == null)
+                {
+                    //instantiate the game object at tile position plus the right transform to center on the correct portion of the square, rotate by r*90
+                    go = Instantiate<GameObject>(go, CachedBehaviour.transform);
+                    go.transform.localPosition = CachedBehaviour.GetCellCenterLocal(position) + Vector3.Scale(CachedCellSize, (center - CachedBehaviour.tileAnchor + .25f * cornerLocs[i]));
+                    go.transform.localRotation = Quaternion.AngleAxis(-r * 90+180, CachedTowardCamera);
+                    go.transform.localScale = new Vector3(.5f * CachedCellSize.x, .5f * CachedCellSize.y, .5f * CachedCellSize.y); //assume GameObject is 1 unit scale. because standards. depending on usage, cachedCellSize may shift to a vec3 of the smallest aspect of the CachedCellSize // just aspect ratio things
+                    go.name = name;
+                }
+            }
         }
         Debug.Log($"I finish {position}");
 
         //i think the math is all there so lets see what happens.
         //if this works on my first try, i'll shit my pants.
-        return base.RuleMatches(rule, position, tilemap, ref transform);
+        return base.StartUp(position, tilemap, instantiatedGameObject);
     }
 
 }
