@@ -210,6 +210,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log($"Colliding");
         if (collision?.gameObject?.GetComponent<TagList>()?.Attributes?.ContainsKey("Obtainable")??false)
         {
+            //Debug.Log($"Colliding with collectible");
             Destroy(collision.gameObject);
             string type = collision.gameObject.GetComponent<TagList>().Attributes["GameObjectType"];
             Inventory.Add(type);

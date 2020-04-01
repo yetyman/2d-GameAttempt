@@ -37,7 +37,7 @@ public class NavigatableMap : MonoBehaviour
         Debug.Log($"clicked {rawPos}");
         //fire event for position
 
-        var pos = rawPos;//Camera.main.ScreenToWorldPoint(rawPos);
+        var pos = Camera.main.ScreenToWorldPoint(rawPos);
         pos = transform.InverseTransformPoint(pos);
 
         //need to convert 

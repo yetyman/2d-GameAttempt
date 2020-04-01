@@ -21,6 +21,7 @@ public class Inventory : MonoBehaviour
             Items.Add(name, 0);
         Items[name]++;
 
+        Debug.Log($"Item {name} added");
         AddEvent.Invoke(name);
     }
 }

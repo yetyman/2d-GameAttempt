@@ -51,7 +51,7 @@ public class MarchingSquaresTile : RuleTile<MarchingSquaresTile.Neighbor> {
     public override bool StartUp(Vector3Int position, ITilemap tilemap, GameObject instantiatedGameObject)
     {
 
-        Debug.Log($"I start {position}");
+        //Debug.Log($"I start {position}");
         if (!tilemap.Equals(CachedMap))
             squarePatterns.Clear();
         if (!squarePatterns.Any())
@@ -66,7 +66,7 @@ public class MarchingSquaresTile : RuleTile<MarchingSquaresTile.Neighbor> {
             CachedTilemapLocation = tilemap.GetComponent<Transform>();
             CachedCellSize = CachedBehaviour.cellSize;
             CachedTowardCamera = new Vector3Int(0, 0, CachedBehaviour.transform.position.z - Camera.main.transform.position.z < 0 ? 1 : -1);
-            Debug.Log($"I found things for this tilemap");
+            Debug.Log($"I found things for the tilemap {CachedBehaviour.name}");
             squarePatterns.Add(0b_0000_0000, o0000);
             squarePatterns.Add(0b_0000_0001, o0001);
             squarePatterns.Add(0b_0000_0011, o0011);
@@ -92,7 +92,7 @@ public class MarchingSquaresTile : RuleTile<MarchingSquaresTile.Neighbor> {
             if (posTile != null)
                 myBytes += (byte)(neighborByte << adj.Key);
         }
-        Debug.Log($"at {position} but really {CachedBehaviour.GetCellCenterLocal(position)}\n{Convert.ToString(myBytes, 2)} (should be anything a byte can be 0-255)");
+        //Debug.Log($"at {position} but really {CachedBehaviour.GetCellCenterLocal(position)}\n{Convert.ToString(myBytes, 2)} (should be anything a byte can be 0-255)");
 
         //made bit arr
         //now make four corners for marching squares shape resolution
@@ -125,16 +125,13 @@ public class MarchingSquaresTile : RuleTile<MarchingSquaresTile.Neighbor> {
                 var destinationSquare = neighboring[(8-2 * i) % 8];
                 var destinationSubSquare = (i + 3) % 4;
                 var destinationRotation = LoopingRightShift(1, 4, i + 1);
-                Debug.Log($"placing extra corner at {destinationSquare} in subsquare {destinationSubSquare} with the following orientation\n{destinationRotation % 2}{(destinationRotation >> 1) % 2}\n{(destinationRotation >> 2) % 2}{(destinationRotation >> 3) % 2}");
+                //Debug.Log($"placing extra corner at {destinationSquare} in subsquare {destinationSubSquare} with the following orientation\n{destinationRotation % 2}{(destinationRotation >> 1) % 2}\n{(destinationRotation >> 2) % 2}{(destinationRotation >> 3) % 2}");
                 extCorners[destinationSquare].Add(destinationSubSquare, destinationRotation);
             }
-            //to right
-            //1 1 x
-            //c 0
             if (corners[i] == 5 || corners[i] == 13)
                 extCorners[neighboring[(8 - 2 * i + 2) % 8]].Add((i + 1) % 4, LoopingRightShift(4, 4, i+1));
             corners[i] = (byte)(((corners[i] << (4 - i)) | (byte)((uint)corners[i] >> i)) & 0b_0000_1111); //rotate  
-            Debug.Log($"corner {i} is {Convert.ToString(corners[i])} (should be 0-15)");
+            //Debug.Log($"corner {i} is {Convert.ToString(corners[i])} (should be 0-15)");
         }
 
         //now each corner is rotated to the same orientation relative to the whole block.
@@ -156,7 +153,7 @@ public class MarchingSquaresTile : RuleTile<MarchingSquaresTile.Neighbor> {
         
         //alright, time for the fun part. figure out which game object each square relates to.
 
-        Debug.Log($"I finish {position}");
+        //Debug.Log($"I finish {position}");
 
         //i think the math is all there so lets see what happens.
         //if this works on my first try, i'll shit my pants.
@@ -187,28 +184,30 @@ public class MarchingSquaresTile : RuleTile<MarchingSquaresTile.Neighbor> {
             //corner = LoopingLeftShift(corner, 4, 1);
             corner = (byte)(((corner << 1) | (byte)((uint)corner >> (4 - 1))) & 0b_0000_1111);
         }
-        Debug.Log($"{position} is a {Convert.ToString(corner, 2)}");
+        //Debug.Log($"{position} is a {Convert.ToString(corner, 2)}");
         go = squarePatterns[corner];
         if (go != null)
         {
             string name = $"3d{ position.ToString()}({i})";
             string partial = $"({ Convert.ToString(corners[i], 2)})";
             //don't like this for efficiency...
-            if (CachedBehaviour.transform.Find(name+partial) == null)
-                foreach (var c in CachedBehaviour.transform)
+            if(CachedBehaviour!=null)
+            if (CachedBehaviour?.transform?.Find(name+partial) == null)
+                foreach (var c in CachedBehaviour?.transform)
                     if (c is Transform t)
                         if (t.name.Contains(name)) DestroyImmediate(t.gameObject);
 
             name += partial;
-            if (CachedTilemapLocation.Find(name) == null)
-            {
-                //instantiate the game object at tile position plus the right transform to center on the correct portion of the square, rotate by r*90
-                go = Instantiate<GameObject>(go, CachedBehaviour.transform);
-                go.transform.localPosition = CachedBehaviour.GetCellCenterLocal(position) + Vector3.Scale(CachedCellSize, (center - CachedBehaviour.tileAnchor + .25f * cornerLocs[i]));
-                go.transform.localRotation = Quaternion.AngleAxis(-r * 90 + (inside ? 180 : 0), CachedTowardCamera);
-                go.transform.localScale = new Vector3(.5f * CachedCellSize.x, .5f * CachedCellSize.y, .5f * CachedCellSize.y); //assume GameObject is 1 unit scale. because standards. depending on usage, cachedCellSize may shift to a vec3 of the smallest aspect of the CachedCellSize // just aspect ratio things
-                go.name = name;
-            }
+            if(CachedTilemapLocation!=null)
+                if (CachedTilemapLocation.Find(name) == null)
+                {
+                    //instantiate the game object at tile position plus the right transform to center on the correct portion of the square, rotate by r*90
+                    go = Instantiate<GameObject>(go, CachedBehaviour.transform);
+                    go.transform.localPosition = CachedBehaviour.GetCellCenterLocal(position) + Vector3.Scale(CachedCellSize, (center - CachedBehaviour.tileAnchor + .25f * cornerLocs[i]));
+                    go.transform.localRotation = Quaternion.AngleAxis(-r * 90 + (inside ? 180 : 0), CachedTowardCamera);
+                    go.transform.localScale = new Vector3(.5f * CachedCellSize.x, .5f * CachedCellSize.y, .5f * CachedCellSize.y); //assume GameObject is 1 unit scale. because standards. depending on usage, cachedCellSize may shift to a vec3 of the smallest aspect of the CachedCellSize // just aspect ratio things
+                    go.name = name;
+                }
         }
     }
 }

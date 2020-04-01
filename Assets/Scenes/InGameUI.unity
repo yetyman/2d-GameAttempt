@@ -153,11 +153,11 @@ RectTransform:
   m_Father: {fileID: 1429743750}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -164.24487, y: 0}
-  m_SizeDelta: {x: 173, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 268, y: 0}
+  m_SizeDelta: {x: 173, y: 100}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &102701207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,7 +311,7 @@ MonoBehaviour:
     _HashCodes: b38e7f060000000000000000
     _Next: ffffffff0000000000000000
     _Count: 1
-    _Version: 125
+    _Version: 141
     _FreeList: -1
     _FreeCount: 0
     _Keys:
@@ -488,11 +488,11 @@ RectTransform:
   m_Father: {fileID: 1429743750}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -373, y: 0}
-  m_SizeDelta: {x: 258.5, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 16, y: 0}
+  m_SizeDelta: {x: 258.5, y: 100}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1051859888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -643,11 +643,11 @@ RectTransform:
   m_Father: {fileID: 1014480283}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -375.75024, y: 0}
-  m_SizeDelta: {x: 258.5, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 16, y: 0}
+  m_SizeDelta: {x: 258.5, y: 100}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1339359962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -873,11 +873,11 @@ RectTransform:
   m_Father: {fileID: 1014480283}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -167, y: 0}
-  m_SizeDelta: {x: 173, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 268, y: 0}
+  m_SizeDelta: {x: 173, y: 100}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1768936421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1065,7 +1065,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 278075087}
-  m_PlaneDistance: 100
+  m_PlaneDistance: 1
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0

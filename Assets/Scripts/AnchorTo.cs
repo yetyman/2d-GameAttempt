@@ -47,14 +47,14 @@ public class AnchorTo : MonoBehaviour
             //lerp
             var tween = Curve.Evaluate((currentPer - minLerpPer) / (minClampPer - minLerpPer)) * AnchorSpeed;
             var delta = tween * Time.deltaTime * (minClampPer - minLerpPer);
-            Debug.Log($"tweening {tween:0.000} resulting in total camera movement of {delta: 000.000}");
+            //Debug.Log($"tweening {tween:0.000} resulting in total camera movement of {delta: 000.000}");
             retVal = currentPer = currentPer - delta;
         }
 
         if (currentPer > minClampPer)
         {
             //clamp
-            Debug.Log($"outside {minClampPer} of bound size, clamping");
+            //Debug.Log($"outside {minClampPer} of bound size, clamping");
             retVal = minClampPer;
         }
 

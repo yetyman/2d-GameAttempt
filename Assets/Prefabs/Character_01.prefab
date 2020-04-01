@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 7038320519022976508}
   - component: {fileID: 3352970956199644023}
-  - component: {fileID: 7694119467329698490}
   - component: {fileID: 204818079275776811}
   - component: {fileID: 7556376661615877186}
-  - component: {fileID: 6855783416869481361}
   - component: {fileID: 3686389927830540243}
+  - component: {fileID: 7694119467329698490}
+  - component: {fileID: 6855783416869481361}
   - component: {fileID: 2764247673624222062}
   - component: {fileID: 329142137430763216}
   m_Layer: 0
@@ -88,24 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7694119467329698490
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6855783416869481360}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f39e1a4b3d1bd8247829520646cb81e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Inventory: {fileID: 0}
-  SnapToGrid: 0
-  StuckBufferLength: 3
-  asset: {fileID: -944628639613478452, guid: e38074b127caafd4fb2b10a9d98f4710, type: 3}
-  precision: 0.001
-  Speed: 96
 --- !u!50 &204818079275776811
 Rigidbody2D:
   serializedVersion: 4
@@ -162,31 +144,6 @@ PolygonCollider2D:
       - {x: 3.25, y: 1.75}
       - {x: 2.5, y: 2.25}
       - {x: 0.75, y: 4}
---- !u!114 &6855783416869481361
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6855783416869481360}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19b92b46eca168949b8a735e6a9ef278, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Items:
-    _Buckets: ffffffffffffffffffffffff
-    _HashCodes: 000000000000000000000000
-    _Next: 000000000000000000000000
-    _Count: 0
-    _Version: 0
-    _FreeList: -1
-    _FreeCount: 0
-    _Keys:
-    - 
-    - 
-    - 
-    _Values: 000000000000000000000000
 --- !u!82 &3686389927830540243
 AudioSource:
   m_ObjectHideFlags: 0
@@ -283,6 +240,49 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7694119467329698490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6855783416869481360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f39e1a4b3d1bd8247829520646cb81e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Inventory: {fileID: 0}
+  SnapToGrid: 0
+  StuckBufferLength: 3
+  asset: {fileID: -944628639613478452, guid: e38074b127caafd4fb2b10a9d98f4710, type: 3}
+  precision: 0.01
+  Speed: 96
+--- !u!114 &6855783416869481361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6855783416869481360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19b92b46eca168949b8a735e6a9ef278, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Items:
+    _Buckets: ffffffffffffffffffffffff
+    _HashCodes: 000000000000000000000000
+    _Next: 000000000000000000000000
+    _Count: 0
+    _Version: 0
+    _FreeList: -1
+    _FreeCount: 0
+    _Keys:
+    - 
+    - 
+    - 
+    _Values: 000000000000000000000000
 --- !u!114 &2764247673624222062
 MonoBehaviour:
   m_ObjectHideFlags: 0
